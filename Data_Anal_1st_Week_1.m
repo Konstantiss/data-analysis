@@ -7,8 +7,6 @@ for i= 1:length(ns)
        temp = rand
        if temp > 0.5
            tails(j) = temp
-       else
-           heads(j) = temp
        end
     end
     tails = tails(tails~=0)
