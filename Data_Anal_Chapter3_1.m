@@ -1,3 +1,9 @@
+n = 1000;
+lambda = 100;
 
+poiss = poissrnd(lambda, 1, n);
 
-r = solve(mle(poissrnd(lambda, 1, 5), 'distribution', 'poisson'), lambda)
+maxLikelihoodEstimate = mle(poiss, 'distribution', 'poisson');
+
+%Prove that they're equal
+maxLikelihoodEstimate == mean(poiss)
