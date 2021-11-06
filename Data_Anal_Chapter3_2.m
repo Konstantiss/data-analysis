@@ -7,3 +7,12 @@ maxLikelihoodEstimate = mle(exp, 'distribution', 'exponential');
 
 %Prove that they're equal
 maxLikelihoodEstimate == mean(exp)
+
+
+y = 1/n * sum(exp);
+
+histogram(y);
+
+histfit(exp(:,1),20,'exponential')
+
+mean(y)
