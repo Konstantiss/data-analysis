@@ -1,3 +1,5 @@
+clc
+clear
 
 ns = 10:50:1000
 tailsPercentages = zeros(1, length(ns))

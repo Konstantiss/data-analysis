@@ -1,3 +1,6 @@
+clc
+clear
+
 n = 1000
 l = 1 %lambda
 x = rand(n, 1)

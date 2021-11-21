@@ -1,3 +1,6 @@
+clc
+clear
+
 erruptionData = readmatrix("erruption.txt");
 
 waitingTime1989 = erruptionData(:,1);

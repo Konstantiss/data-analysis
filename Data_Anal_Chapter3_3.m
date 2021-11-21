@@ -1,3 +1,6 @@
+clc
+clear
+
 %first question
 M = 1000;
 n = 5;

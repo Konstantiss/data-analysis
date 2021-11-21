@@ -1,3 +1,6 @@
+clc
+clear
+
 X = rand(10,100);
 
 %First question:

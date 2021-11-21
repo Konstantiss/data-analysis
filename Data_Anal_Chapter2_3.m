@@ -1,3 +1,6 @@
+clc
+clear
+
 mu = [5 6];
 Sigma = [2 2.5; 2.5 4];
 R = mvnrnd(mu,Sigma,1000);

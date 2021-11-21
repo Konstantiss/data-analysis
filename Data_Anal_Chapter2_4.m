@@ -1,3 +1,6 @@
+clc
+clear
+
 n = 300
 a = 1
 b = 2
