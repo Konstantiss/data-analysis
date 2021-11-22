@@ -1,7 +1,7 @@
 clc
 clear
 
-X = rand(10,1);
+X = normrnd(0,1,10,1);
 
 %First question:
 figure(1)
