@@ -8,27 +8,24 @@ duration1989 = erruptionData(:,2);
 waitingTime2006 = erruptionData(:,3);
 
 %First question:
-ciStdWaitingTime1989(1,1) = sqrt(((length(waitingTime1989)-1) * var(waitingTime1989)) / chi2inv(0.975, length(waitingTime1989)-1));
-ciStdWaitingTime1989(2,1) = sqrt(((length(waitingTime1989) - 1) * var(waitingTime1989)) / chi2inv(0.025, length(waitingTime1989)-1));
+[hWaitingTime1989,pWaitingTime1989,ciWaitingTime1989,statsWaitingTime1989] = vartest(waitingTime1989, 10); %10 is given randomly as an argument in order to get the real ci
+ciStdWaitingTime1989 = sqrt(ciWaitingTime1989);
 hWaitingTime1989 = vartest(waitingTime1989, 100);
 
-ciStdDuration1989(1,1) = sqrt(((length(duration1989)-1) * var(duration1989)) / chi2inv(0.975, length(duration1989)-1));
-ciStdDuration1989(2,1) = sqrt(((length(duration1989) - 1) * var(duration1989)) / chi2inv(0.025, length(duration1989)-1));
-hDuration1989 = vartest(duration1989, 100);
+[hDuration1989,pDuration1989,ciDuration1989,statsDuration1989] = vartest(duration1989, 10);
+ciStdDuration1989 = sqrt(ciDuration1989);
+hDuration1989 = vartest(duration1989, 1);
 
-ciStdWaitingTime2006(1,1) = sqrt(((length(waitingTime2006)-1) * var(waitingTime2006)) / chi2inv(0.975, length(waitingTime2006)-1));
-ciStdWaitingTime2006(2,1) = sqrt(((length(waitingTime2006) - 1) * var(waitingTime2006)) / chi2inv(0.025, length(waitingTime2006)-1));
+[hWaitingTime2006,pWaitingTime2006,ciWaitingTime2006,statsWaitingTime2006] = vartest(waitingTime2006, 10);
+ciStdWaitingTime2006 = sqrt(ciWaitingTime2006);
 hWaitingTime2006 = vartest(waitingTime2006, 100);
 
 %Second question:
-ciMeanWaitingTime1989 = ttest(waitingTime1989);
-hMeanWaitingTime1989 = ttest(waitingTime1989, 75);
+[hMeanWaitingTime1989,pMeanWaitingTime1989,ciMeanWaitingTime1989,statsMeanWaitingTime1989] = ttest(waitingTime1989,75);
 
-ciMeanDuration1989 = ttest(duration1989);
-hMeanDuration1989 = ttest(duration1989, 2.5);
+[hMeanDuration1989,pMeanDuration1989,ciMeanDuration1989,statsMeanDuration1989] = ttest(duration1989,2.5);
 
-ciMeanWaitingTime2006 = ttest(waitingTime2006); 
-hMeanWaitingTime2006 = ttest(waitingTime2006);
+[hMeanWaitingTime2006,pMeanWaitingTime2006,ciMeanWaitingTime2006,statsMeanWaitingTime2006] = ttest(waitingTime2006,75);
 
 %Third question:
 [hChiWaitingTime1989,pChiWaitingTime1989] = chi2gof(waitingTime1989);
@@ -49,8 +46,8 @@ for i=1:1:298
    end
 end
 
-[hMeanShortWaitingTime,pMeanShortWaitingTime,ciMeanShortWaitingTime,statsMeanShortWaitingTime] = ttest(shortWatingTime(:,1),65);
+[hMeanShortWaitingTime,pMeanShortWaitingTime,ciMeanShortWaitingTime,statsMeanShortWaitingTime] = ttest(shortWaitingTime(:,1),65);
 hVarShortWaitingTime = vartest(shortWaitingTime, 100);
 
-[hMeanLongtWaitingTime,pMeanLongWaitingTime,ciMeanLongWaitingTime,statsMeanLongWaitingTime] = ttest(longWatingTime(:,1),91);
+[hMeanLongtWaitingTime,pMeanLongWaitingTime,ciMeanLongWaitingTime,statsMeanLongWaitingTime] = ttest(longWaitingTime(:,1),91);
 hVarLongWaitingtime = vartest(longWaitingTime, 100);
