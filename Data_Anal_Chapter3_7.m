@@ -1,12 +1,14 @@
 clc
 clear
+n = 10;
+m = 100;
 
-X = rand(10,100);
+X = normrnd(0,1,n,m);
 
 %First question:
 [hX,pX,ciX,statsX] = ttest(X);
 
-ciBootX = bootci(100,@mean,X);
+ciBootX = bootci(m,@mean,X);
 
 figure(1)
 histogram(ciX,50)
@@ -20,7 +22,7 @@ Y = X.^2;
 
 [hY,pY,ciY,statsY] = ttest(Y);
 
-ciBootY = bootci(100,@mean,Y);
+ciBootY = bootci(m,@mean,Y);
 
 figure(2)
 histogram(ciY,50)
