@@ -16,6 +16,8 @@ allValues(1:100,11:22) = Y;
 
 iterations = 1000;
 pValues = zeros(1,100);
+meanDifferenceResults = NaN(M,iterations);
+
 for i=1:M
     for j=1:iterations
        meanDifference1 = mean(X(i,:)) - mean(Y(i,:));
@@ -25,10 +27,11 @@ for i=1:M
        newY = shuffledSample((n+1):m);
        meanDifference2 = mean(newX) - mean(newY);
        if abs(meanDifference2) >= meanDifference1
-           meanDifferenceResults(j) = 1;
+           meanDifferenceResults(i,j) = 1;
        else
-           meanDifferenceResults(j) = 0;
+           meanDifferenceResults(i,j) = 0;
        end
     end
-    pValues(1,i) = sum(meanDifferenceResults(:) == 1) / length(meanDifferenceResults);
 end
+
+pValue = sum(meanDifferenceResults(:) == 1) / (M * iterations)
