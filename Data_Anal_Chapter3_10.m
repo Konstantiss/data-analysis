@@ -20,10 +20,6 @@ pValues0 = NaN(1,M);
 pValues05 = NaN(1,M);
 pValuesBoot0 = NaN(1,M);
 pValuesBoot05 = NaN(1,M);
-counter0 = 0;
-counter05 = 0;
-counterBoot0 = 0;
-counterBoot05 = 0;
 
 
 %for different as, change the a index
@@ -34,23 +30,10 @@ for i=1:M
     bootstat = bootstrp(B,@mean,X(i,:));
     [~,pValuesBoot0(1,i),~,~] = ttest(bootstat,0, 'Alpha', a(1));
     [~,pValuesBoot05(1,i),~,~] = ttest(bootstat,0.5, 'Alpha', a(1));        
-
-    if pValues0(1,i) <= a(1)
-       counter0 = counter0 + 1; 
-    end
-    if pValues05(1,i) <= a(1)
-       counter05 = counter05 + 1; 
-    end
-    if pValuesBoot0(1,i) <= a(1)
-       counterBoot0 = counterBoot0 + 1; 
-    end
-    if pValuesBoot05(1,i) <= a(1)
-       counterBoot05 = counterBoot05 + 1; 
-    end
 end
 
-percentage0 = counter0 / M
-percentage05 = counter05 / M
-percentageBoot0 = counterBoot0 / M
-percentageBoot05 = counterBoot05 / M
+percentage0 = sum(pValues0(1,:) <= a(1)) / M
+percentage05 = sum(pValues05(1,:) <= a(1)) / M
+percentageBoot0 = sum(pValuesBoot0(1,:) <= a(1)) / M
+percentageBoot05 = sum(pValuesBoot05(1,:) <= a(1)) / M
 
