@@ -13,16 +13,48 @@ X = normrnd(mu,sigma,M,n);
 
 Y = normrnd(mu,sigma,M,m);
 
-allValues = zeros(100,22);
+lowerLim = (B+1)*a(1)/2;
+upperLim = B+1-lowerLim;
+limits = [lowerLim upperLim];
 
-allValues(1:100,1:10) = X;
-allValues(1:100,11:22) = Y;
-
-iterations = 1000;
-pValuesRandomisation = NaN(1,100);
 pValuesParametric = NaN(1,100);
 pValuesBoot = NaN(1,100);
-meanDifferenceResults = NaN(M,iterations);
+result = zeros(M,1);
+
+% Randomisation test
+for i = 1:M
+    samples = [X(i,:) Y(i,:)];
+    difference = NaN(B,1);
+    for j = 1:B
+        samplesTemp = samples(randperm(length(samples)));
+        newX = samplesTemp(1:n);
+        newY = samplesTemp(n+1:end);
+        mx = mean(newX);
+        my = mean(newY);
+        difference(j) = mx - my;
+    end
+    stat = mean(X(i,:)) - mean(Y(i,:));
+    difference = [difference; stat];
+    difference = sort(difference);
+    
+    rankStat = find(difference == stat);
+    if( length(rankStat) > 1)
+        L = length(rankStat);
+        sample = randsample(L,1);
+        rankStat = rankStat(sample);
+    end
+    
+    if( rankStat < limits(1) || rankStat > limits(2) )
+        result(i) = 1;
+    end
+    
+    if rankStat > 0.5*(B+1)
+        pd = 2*(1-rankStat/(B+1));
+    else
+        pd = 2*rankStat/(B+1);
+    end
+    
+end
 
 for i=1:M
     [~,pValuesParametric(1,i),~,~] = ttest2(X(i,:),Y(i,:), 'Alpha', a(1));
@@ -31,25 +63,8 @@ for i=1:M
     [~,pValuesBoot(1,i),~,~] = ttest2(bootstrapMeanX,bootstrapMeanY, 'Alpha', a(1));
 end
 
-%Randomisation test:
-for i=1:M
-    for j=1:iterations
-       meanDifference1 = mean(X(i,:)) - mean(Y(i,:));
-       shuffledSample = allValues(i,:);
-       shuffledSample=shuffledSample(randperm(length(shuffledSample)));
-       newX = shuffledSample(1:n);
-       newY = shuffledSample((n+1):m);
-       meanDifference2 = mean(newX) - mean(newY);
-       if abs(meanDifference2) >= meanDifference1
-           meanDifferenceResults(i,j) = 1;
-       else
-           meanDifferenceResults(i,j) = 0;
-       end
-    end
-    pValuesRandomisation(1,i) = sum(meanDifferenceResults(i,:) == 1) / iterations;
-end
 
-rejectionPercentageRandomisation = sum(pValuesRandomisation(:) <= a(1)) / M
-rejectionPercentageParametric = sum(pValuesParametric(:) <= a(1)) / M
-rejectionPercentageBoot = sum(pValuesBoot(:) <= a(1)) / M
-%pValue = sum(meanDifferenceResults(:) == 1) / (M * iterations)
+
+rejectionPercentageRandomisation = sum(result == 1) / M
+rejectionPercentageParametric = sum(pValuesParametric(1,:) <= a(1)) / M
+rejectionPercentageBoot = sum(pValuesBoot(1,:) <= a(1)) / M
