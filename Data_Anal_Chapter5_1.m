@@ -33,11 +33,11 @@ zCritical = norminv(1- 0.05/2);
 lowerBounds = z - zCritical.*(sqrt(1/(n-3)));
 upperBounds = z + zCritical.*(sqrt(1/(n-3)));
 
-% figure(1)
-% histogram(lowerBounds)
-% hold on 
-% histogram(upperBounds)
-% hold off
+ figure(1)
+ histogram(lowerBounds)
+ hold on 
+ histogram(upperBounds)
+ hold off
 
 %Question 2:
 
@@ -57,8 +57,8 @@ for i=1:M
     end
 end
 
-percentage1 = counters(1,1) / 1000 %p = 0
-percentage2 = counters(1,2) / 1000 % p = 0.5
+percentage1 = counters(1,1) / M %p = 0
+percentage2 = counters(1,2) / M % p = 0.5
 
 %Question 3:
 
