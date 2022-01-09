@@ -52,7 +52,46 @@ for i=1:5
     yline(2, 'r');
     yline(0, 'g');
     yline(-2, 'b');
-    title("Diagnostic plot, k = " + i);
+    title("diagnostic plot, k = " + i);
     xlabel("1/T");
-    ylabel("Standardised Error");
+    ylabel("standardised Error");
+end
+
+% Steinhart-Hart
+k = 2;
+Xinput = [ones(length(X),1) X X.^3];
+fetModel = fitlm(Xinput,Y);
+b = regress(Y,Xinput);
+Ypred = Xinput*b;
+
+fetRmse = rmse(fetModel.Residuals.Raw, length(X),3);
+
+R2(i+1) = r2(Ypred,Y);
+AdjustedR2(i+1) = adjR2(Ypred,Y,length(Y),3);
+
+% Plot Regression
+figure();
+scatter(X,Ypred);
+hold on;
+plot(X,Ypred);
+title("data and Steinhart-Hart regression");
+xlabel("ln(R)");
+ylabel("1/T");
+
+% Diagnostic plot
+residuals = Y - Ypred;
+se = sqrt( 1/(length(X)-1) * (sum(residuals.^2)));
+figure()
+fet2 = residuals./fetModel.RMSE;
+scatter(Y,residuals./se);
+hold on;
+plot(Y,repmat(2,1,length(Y)));
+plot(Y,zeros(1,length(Y)));
+plot(Y,repmat(-2,1,length(Y)));
+title("diagnostic plot, Steinhart-Hart");
+xlabel("1/T");
+ylabel("standardised Error");
+
+if( maxAdjR2 > AdjustedR2(end) )
+    disp("Polynomial regression is better");
 end
