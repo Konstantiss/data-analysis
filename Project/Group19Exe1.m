@@ -64,30 +64,34 @@ for i = 1:height(countries)
     end
 end
 
+%Remove zeros.
+positivityRates2021 = positivityRates2021(positivityRates2021~=0);
+positivityRates2020 = positivityRates2020(positivityRates2020~=0);
+
 figure()
 histogram(positivityRates2021, 20)
-title('Maximum positivity rates for week 45-50, 2021')
+title('Maximum positivity rates 2021')
 
 
 figure()
 histfit(positivityRates2021, 20, 'exponential')
-title('Maximum positivity rates for week 45-50, 2021 - exponential distribution fit')
+title('Maximum positivity rates 2021 - exponential distribution fit')
 
 figure()
 histfit(positivityRates2021, 20, 'normal')
-title('Maximum positivity rates for week 45-50, 2021 - normal distribution fit')
+title('Maximum positivity rates 2021 - normal distribution fit')
 
 figure()
 histogram(positivityRates2020, 20)
-title('Maximum positivity rates for week 45-50, 2020')
+title('Maximum positivity rates 2020')
 
 figure()
 histfit(positivityRates2020, 20, 'exponential')
-title('Maximum positivity rates for week 45-50, 2020 - exponential distribution fit')
+title('Maximum positivity rates 2020 - exponential distribution fit')
 
 figure()
 histfit(positivityRates2020, 20, 'normal')
-title('Maximum positivity rates for week 45-50, 2020 - normal distribution fit')
+title('Maximum positivity rates 2020 - normal distribution fit')
 
 fitdist(positivityRates2021, 'Normal')
 fitdist(positivityRates2021, 'Exponential')
