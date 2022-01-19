@@ -1,4 +1,5 @@
 clc
+clear
 
 data = readtable('ECDC-7Days-Testing.xlsx');
 countries = readtable('EuropeanCountries.xlsx');
