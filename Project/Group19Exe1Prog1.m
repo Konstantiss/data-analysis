@@ -72,45 +72,36 @@ figure()
 histogram(positivityRates2021, 20)
 title('Maximum positivity rates 2021')
 
-
-figure()
-histfit(positivityRates2021, 20, 'exponential')
-title('Maximum positivity rates 2021 - exponential distribution fit')
-
-figure()
-histfit(positivityRates2021, 20, 'normal')
-title('Maximum positivity rates 2021 - normal distribution fit')
-
 figure()
 histogram(positivityRates2020, 20)
 title('Maximum positivity rates 2020')
 
-figure()
-histfit(positivityRates2020, 20, 'exponential')
-title('Maximum positivity rates 2020 - exponential distribution fit')
+% distributions = ["Exponential", "Lognormal", "Normal", "Poisson"];
+distributions = ["Normal"];
 
-figure()
-histfit(positivityRates2020, 20, 'normal')
-title('Maximum positivity rates 2020 - normal distribution fit')
 
-pd = fitdist(positivityRates2021, 'Normal')
-figure()
-qqplot(positivityRates2021, pd)
-title("Quantile plot 2021 - Normal distribution")
-pd = fitdist(positivityRates2021, 'Exponential')
-figure()
-qqplot(positivityRates2021, pd)
-title("Quantile plot 2021 - Exponential distribution")
+for i=1:length(distributions)
+    figure()
+    histfit(positivityRates2021, 20, distributions(i))
+    title("Maximum positivity rates 2021 - "+ distributions(i))
+    
+    pd = fitdist(positivityRates2021, distributions(i));
+    figure()
+    qqplot(positivityRates2021, pd)
+    title("Quantile plot 2021 - "+ distributions(i))
+    
+    figure()
+    histfit(positivityRates2020, 20, distributions(i))
+    title("Maximum positivity rates 2020 - "+ distributions(i))
+    
+    pd = fitdist(positivityRates2020, distributions(i));
+    figure()
+    qqplot(positivityRates2020, pd)
+    title("Quantile plot 2020 - "+ distributions(i))
+end
 
-pd = fitdist(positivityRates2020, 'Normal')
-figure()
-qqplot(positivityRates2020, pd)
-title("Quantile plot 2020 - Normal distribution")
-pd = fitdist(positivityRates2020, 'Exponential')
-figure()
-qqplot(positivityRates2020, pd)
-title("Quantile plot 2020 - Exponential distribution")
+chi2gof(positivityRates2020)
+chi2gof(positivityRates2021)
 
-%Judging by the quantile plots, the 2021 data fits the exponential
-%distribution. The same can not be said for the 2020 data, so we cannot say
-%that they can be described by the same distribution.
+%Judging by the quantile plots, the histfit, and the chi2gof, we can say that both the data
+%from 2020 and 2021 fit the normal distribution to some extent.
