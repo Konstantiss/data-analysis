@@ -37,26 +37,46 @@ for i=2:length(greeceRapid)
     greeceRapid(i-1) = greeceRapid(i) - greeceRapid(i-1);
 end
 
-% 
-% dailyPositivityRate = zeros(1,7);
-% europeWeeklyPositivityRatesIndex = 1;
-% differences = zeros(1,12);
-% 
-% for i=1:7:height(greeceData) - 7
-%     upperBound = i + 6;
-%     weeklyPCR = greecePCR(i:upperBound);
-%     weeklyRapid = greeceRapid(i:upperBound);
-%     weeklyCases = greeceCases(i:upperBound);
-%     for j = 1:7
-%         dailyPositivityRate(1,j) = (weeklyCases(j) / (weeklyPCR(j) + weeklyRapid(j))) * 100;
-%     end
-%     dailyPositivityRate = dailyPositivityRate(~isnan(dailyPositivityRate));
-%     differences(europeWeeklyPositivityRatesIndex) = Group19Exe3Fun1(dailyPositivityRate, europeWeeklyPositivityRates(europeWeeklyPositivityRatesIndex));
-%     europeWeeklyPositivityRatesIndex = europeWeeklyPositivityRatesIndex + 1;
-% end
-% 
-% differences
-% 
-% figure()
-% plot(differences)
+daysInAWeek = 7;
+numberOfWeeks = 12;
+
+dailyPositivityRate = zeros(numberOfWeeks,daysInAWeek);
+weeklyPositivityRatesIndex = 1;
+differences = zeros(1,numberOfWeeks);
+
+for i=1:daysInAWeek:height(greeceData)
+    %Get data untill the end of the week.
+    upperBound = i + 6;
+    weeklyPCR = greecePCR(i:upperBound);
+    weeklyRapid = greeceRapid(i:upperBound);
+    weeklyCases = greeceCases(i:upperBound);
+    
+    %Calculate daily positivity rate.
+    for j = 1:daysInAWeek
+        dailyPositivityRate(weeklyPositivityRatesIndex,j) = (weeklyCases(j) / (weeklyPCR(j) + weeklyRapid(j))) * 100;
+    end
+    
+    %Remove missing data.
+    dailyPositivityRate = rmmissing(dailyPositivityRate);
+    
+    differences(weeklyPositivityRatesIndex) = Group19Exe3Fun1(dailyPositivityRate(weeklyPositivityRatesIndex,:), europeWeeklyPositivityRates(weeklyPositivityRatesIndex));
+    weeklyPositivityRatesIndex = weeklyPositivityRatesIndex + 1;
+end
+
+
+dailyPositivityRateDimensions = size(dailyPositivityRate);
+dailyPositivityRate = reshape(dailyPositivityRate, dailyPositivityRateDimensions(2), []);
+greeceWeeklyPositivityRates = mean(dailyPositivityRate);
+
+xAxis = [1:numberOfWeeks];
+
+figure()
+plot(differences)
+title('Differences')
+
+figure()
+scatter(xAxis, greeceWeeklyPositivityRates)
+hold on
+scatter(xAxis, europeWeeklyPositivityRates)
+legend('Greece', 'Europe')
 
