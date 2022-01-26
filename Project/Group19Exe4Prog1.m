@@ -14,23 +14,32 @@ positivityRates2021 = zeros(1, length(weeks2021));
 positivityRates2020 = zeros(1, length(weeks2020));
 importances = zeros(1,5);
 
-for i = 1:length(weeks2021)
-    weekData2021 = estoniaData(contains(estoniaData.year_week, weeks2021(i)), :);
-    positivityRates2021(i) = mean(weekData2021.positivity_rate);
-    
-    weekData2020 = estoniaData(contains(estoniaData.year_week, weeks2020(i)), :);
-    positivityRates2020(i) = mean(weekData2020.positivity_rate);
-end
+% for i = 1:length(weeks2021)
+%     weekData2021 = estoniaData(contains(estoniaData.year_week, weeks2021(i)), :);
+%     positivityRates2021(i) = mean(weekData2021.positivity_rate);
+%     
+%     weekData2020 = estoniaData(contains(estoniaData.year_week, weeks2020(i)), :);
+%     positivityRates2020(i) = mean(weekData2020.positivity_rate);
+% end
 
-positivityRates2021 = rmmissing(positivityRates2021);
-positivityRates2020 = rmmissing(positivityRates2020);
+estoniaData2021 = estoniaData(contains(estoniaData.year_week, weeks2021), :);
+estoniaData2020 = estoniaData(contains(estoniaData.year_week, weeks2020), :); %2020-W43 is missing.
+
+positivityRates2021 = estoniaData2021.positivity_rate;
+positivityRates2020 = estoniaData2020.positivity_rate;
 
 ttest2(positivityRates2021,positivityRates2020);
 
-positivityRates2021Boot = bootstrp(1000,@mean,positivityRates2021);
-positivityRates2020Boot = bootstrp(1000,@mean,positivityRates2020);
+%Resample data.
+[~,bootsam] = bootstrp(1000,[],positivityRates2021);
+bootsam = reshape(bootsam, length(bootsam), []);
+positivityRates2021Resampled = positivityRates2021(bootsam);
 
-[~,~,ci,~] = ttest2(positivityRates2021Boot,positivityRates2021Boot)
+[~,bootsam] = bootstrp(1000,[],positivityRates2020);
+bootsam = reshape(bootsam, length(bootsam), []);
+positivityRates2020Resampled = positivityRates2020(bootsam);
+
+[~,~,ci,~] = ttest2(positivityRates2021Resampled,positivityRates2021Resampled)
 
 if 0 > ci(1) && 0 < ci(2)
     importances(1) = 1;
@@ -54,11 +63,17 @@ for i=1:length(countryIds)
     positivityRatesCountries2020 = rmmissing(positivityRatesCountries2020);
     
     ttest2(positivityRatesCountries2021,positivityRatesCountries2020)
+  
+    %Resample data.
+    [~,bootsam] = bootstrp(1000,[],positivityRatesCountries2021(i,:));
+    bootsam = reshape(bootsam, length(bootsam), []);
+    positivityRatesCountries2021Resampled = positivityRatesCountries2021(bootsam);
     
-    positivityRatesCountries2021Boot = bootstrp(1000,@mean,positivityRatesCountries2021(i,:));
-    positivityRatesCountries2020Boot = bootstrp(1000,@mean,positivityRatesCountries2020(i,:));
+    [~,bootsam] = bootstrp(1000,[],positivityRatesCountries2020(i,:));
+    bootsam = reshape(bootsam, length(bootsam), []);
+    positivityRatesCountries2020Resampled = positivityRatesCountries2020(bootsam);
     
-    [~,~,ci,~] = ttest2(positivityRatesCountries2021Boot,positivityRatesCountries2020Boot)
+    [~,~,ci,~] = ttest2(positivityRatesCountries2021Resampled,positivityRatesCountries2020Resampled)
     
     if 0 > ci(1) && 0 < ci(2)
         importances(1) = 1;
