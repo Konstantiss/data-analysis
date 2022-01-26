@@ -63,8 +63,8 @@ for i=1:daysInAWeek:height(greeceData)
     weeklyPositivityRatesIndex = weeklyPositivityRatesIndex + 1;
 end
 
-
 dailyPositivityRateDimensions = size(dailyPositivityRate);
+%Reshape in order to get a 1x12 array with the means.
 dailyPositivityRate = reshape(dailyPositivityRate, dailyPositivityRateDimensions(2), []);
 greeceWeeklyPositivityRates = mean(dailyPositivityRate);
 
