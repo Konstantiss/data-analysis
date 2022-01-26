@@ -106,3 +106,9 @@ end
 
 %It is apparent from the graphs that the positivity rates from 2020 and
 %2021 do not follow the same distribution.
+
+%Instead of using the combined sample of positivityRates2021 and
+%positivityRates2020, we used kstest2 because it fits our problem better.
+%This is because kstest2(X,Y) checks the null hypothesis that X and Y come from
+%the same distribution. While kstest(X) checks the null hypothesis that X
+%comes from a standard normal distribution.
