@@ -70,19 +70,30 @@ positivityRates2020 = positivityRates2020(positivityRates2020~=0);
 
 %% Question 2:
 
-positivityRates = [positivityRates2020; positivityRates2021];
-positivityRates = reshape(positivityRates, 1, []);
-
 M = 1000;
+positivityRates2021Boot = bootstrp(M, @mean, positivityRates2021, length(positivityRates2021));
+positivityRates2020Boot = bootstrp(M, @mean, positivityRates2020, length(positivityRates2020));
 
-positivityRatesBoot = bootstrp(M, @mean, positivityRates, length(positivityRates));
 ksStats = zeros(M,1);
+pValues = zeros(M,1);
+h0 = zeros(M,1);
 for i = 1:M
-   [h,p,ksstat,cv] = kstest(positivityRatesBoot(i,:))
+   [h,p,ksstat] = kstest2(positivityRates2021Boot(i,:),positivityRates2020Boot(i,:))
    ksStats(i,1) = ksstat;
+   pValues(i,1) = p;
+   h0(i) = h;
 end
 figure()
 histogram(ksStats)
+title("Kolmogorov - Shmirnov statistic histogram")
+
+figure()
+histogram(pValues)
+title("P values histogram")
+
+figure()
+histogram(h0)
+title("H0 histogram")
 
 distributions = ["Exponential", "Lognormal", "Normal", "Poisson"];
 
@@ -92,3 +103,6 @@ for i=1:length(distributions)
     qqplot(ksStats, pd)
     title("Quantile plot - "+ distributions(i))
 end
+
+%It is apparent from the graphs that the positivity rates from 2020 and
+%2021 do not follow the same distribution.
