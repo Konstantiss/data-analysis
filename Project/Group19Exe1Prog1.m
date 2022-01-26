@@ -76,9 +76,7 @@ figure()
 histogram(positivityRates2020, 20)
 title('Maximum positivity rates 2020')
 
-% distributions = ["Exponential", "Lognormal", "Normal", "Poisson"];
-distributions = ["Normal"];
-
+distributions = ["Exponential", "Lognormal", "Normal", "Poisson"];
 
 for i=1:length(distributions)
     figure()

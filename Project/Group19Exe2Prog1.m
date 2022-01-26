@@ -84,7 +84,11 @@ end
 figure()
 histogram(ksStats)
 
-pd = fitdist(ksStats, 'Normal');
-figure()
-qqplot(ksStats, pd)
-title("Quantile plot 2021 - Normal Distribution")
+distributions = ["Exponential", "Lognormal", "Normal", "Poisson"];
+
+for i=1:length(distributions)
+    pd = fitdist(ksStats, distributions(i));
+    figure()
+    qqplot(ksStats, pd)
+    title("Quantile plot - "+ distributions(i))
+end
