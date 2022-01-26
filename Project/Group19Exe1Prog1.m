@@ -46,7 +46,7 @@ end
 for i = 1:height(countries)
     countryData = data(contains(data.country, countries{i,2}), :);
     weekData2021 = countryData(contains(countryData.year_week, weeks2021(bestWeek2021Id)), :);
-    maxWeekPositivityRate2021 = max(weekData2021.positivity_rate);
+    maxWeekPositivityRate2021 = mean(weekData2021.positivity_rate); %Get the mean because some countries have data for many regions.
 
     if maxWeekPositivityRate2021 > positivityRates2021(i,1) 
         if maxWeekPositivityRate2021 < 100
@@ -54,8 +54,8 @@ for i = 1:height(countries)
         end
     end
     
-    weekData2020 = countryData(contains(countryData.year_week, weeks2020(j)), :);
-    maxWeekPositivityRate2020 = max(weekData2020.positivity_rate);
+    weekData2020 = countryData(contains(countryData.year_week, weeks2020(bestWeek2020Id)), :);
+    maxWeekPositivityRate2020 = mean(weekData2020.positivity_rate); %Get the mean because some countries have data for many regions.
 
     if maxWeekPositivityRate2020 > positivityRates2020(i,1)
         if maxWeekPositivityRate2020 < 100
@@ -93,8 +93,24 @@ figure()
 histfit(positivityRates2020, 20, 'normal')
 title('Maximum positivity rates 2020 - normal distribution fit')
 
-fitdist(positivityRates2021, 'Normal')
-fitdist(positivityRates2021, 'Exponential')
+pd = fitdist(positivityRates2021, 'Normal')
+figure()
+qqplot(positivityRates2021, pd)
+title("Quantile plot 2021 - Normal distribution")
+pd = fitdist(positivityRates2021, 'Exponential')
+figure()
+qqplot(positivityRates2021, pd)
+title("Quantile plot 2021 - Exponential distribution")
 
-fitdist(positivityRates2020, 'Normal')
-fitdist(positivityRates2020, 'Exponential')
+pd = fitdist(positivityRates2020, 'Normal')
+figure()
+qqplot(positivityRates2020, pd)
+title("Quantile plot 2020 - Normal distribution")
+pd = fitdist(positivityRates2020, 'Exponential')
+figure()
+qqplot(positivityRates2020, pd)
+title("Quantile plot 2020 - Exponential distribution")
+
+%Judging by the quantile plots, the 2021 data fits the exponential
+%distribution. The same can not be said for the 2020 data, so we cannot say
+%that they can be described by the same distribution.
