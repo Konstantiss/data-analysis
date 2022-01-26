@@ -10,17 +10,6 @@ countries = readtable('EuropeanCountries.xlsx');
 weeks2021 = ["2021-W42" "2021-W43" "2021-W44" "2021-W45" "2021-W46" "2021-W47" "2021-W48" "2021-W49" "2021-W50"];
 weeks2020 = ["2020-W42" "2020-W43" "2020-W44" "2020-W45" "2020-W46" "2020-W47" "2020-W48" "2020-W49" "2020-W50"];
 estoniaData = data(contains(data.country, countries{estoniaId,2}), :);
-positivityRates2021 = zeros(1, length(weeks2021));
-positivityRates2020 = zeros(1, length(weeks2020));
-importances = zeros(1,5);
-
-% for i = 1:length(weeks2021)
-%     weekData2021 = estoniaData(contains(estoniaData.year_week, weeks2021(i)), :);
-%     positivityRates2021(i) = mean(weekData2021.positivity_rate);
-%     
-%     weekData2020 = estoniaData(contains(estoniaData.year_week, weeks2020(i)), :);
-%     positivityRates2020(i) = mean(weekData2020.positivity_rate);
-% end
 
 estoniaData2021 = estoniaData(contains(estoniaData.year_week, weeks2021), :);
 estoniaData2020 = estoniaData(contains(estoniaData.year_week, weeks2020), :); %2020-W43 is missing.
@@ -40,10 +29,7 @@ bootsam = reshape(bootsam, length(bootsam), []);
 positivityRates2020Resampled = positivityRates2020(bootsam);
 
 [~,~,ci,~] = ttest2(positivityRates2021Resampled,positivityRates2021Resampled)
-
-if 0 > ci(1) && 0 < ci(2)
-    importances(1) = 1;
-end
+sum(ci ~= 0)
 
 countryIds = [estoniaId - 4 estoniaId - 3 estoniaId - 2 estoniaId - 1];
 
@@ -74,8 +60,5 @@ for i=1:length(countryIds)
     positivityRatesCountries2020Resampled = positivityRatesCountries2020(bootsam);
     
     [~,~,ci,~] = ttest2(positivityRatesCountries2021Resampled,positivityRatesCountries2020Resampled)
-    
-    if 0 > ci(1) && 0 < ci(2)
-        importances(1) = 1;
-    end
+    sum(ci ~= 0)
 end
