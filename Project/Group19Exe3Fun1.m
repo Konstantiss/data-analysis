@@ -1,5 +1,5 @@
 function difference = Group19Exe3Fun1(dailyPositivityRatesGreece, weeklyPositivityRateEurope)
-    ci = bootci(1000,@mean,dailyPositivityRatesGreece)
+    ci = bootci(1000,@mean,dailyPositivityRatesGreece);
     
     if weeklyPositivityRateEurope > ci(1)
        if weeklyPositivityRateEurope < ci(2)
