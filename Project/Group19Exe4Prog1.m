@@ -4,7 +4,7 @@
 clc
 clear
 
-M = 100;
+M = 1000;
 estoniaId = 8;
 data = readtable('ECDC-7Days-Testing.xlsx');
 countries = readtable('EuropeanCountries.xlsx');
@@ -42,12 +42,12 @@ correlatedSamplesEstonia = 0;
 for i=1:M
     [h,pvaluesEstoniaBoot(1,i),ci,stats] = ttest2(positivityRates2021Resampled(i,:),positivityRates2020Resampled(i,:));
     %Check if ci contains 0.
-    if sum(ci ~= 0) > 0
+    if ci(1) < 0 && ci(2) > 0
         correlatedSamplesEstonia = correlatedSamplesEstonia + 1;
     end
 end
 correlationPercentage = (correlatedSamplesEstonia / M) * 100;
-
+fprintf("Correlated samples percentage for Estonia: %0.2f ",correlationPercentage);
 
 %% Other countries
 countryIds = [estoniaId - 4 estoniaId - 3 estoniaId - 2 estoniaId - 1];
@@ -68,7 +68,7 @@ for i=1:length(countryIds)
         positivityRatesCountries2020(i,j) = mean(weekData2020.positivity_rate);
     end
     
-    [h,countryPValues(i,1),ci,stats] = ttest2(positivityRatesCountries2021(i,:),positivityRatesCountries2020(i,:))
+    [h,countryPValues(i,1),ci,stats] = ttest2(positivityRatesCountries2021(i,:),positivityRatesCountries2020(i,:));
     
     %Resample data.
     temp = positivityRatesCountries2021(i,:);
@@ -81,9 +81,9 @@ for i=1:length(countryIds)
     bootsam = reshape(bootsam, length(bootsam), []);
     positivityRatesCountry2020Resampled = temp(bootsam);
     for j=1:M
-        [h,bootCountryPValues(i,j),ci,stats] = ttest2(positivityRatesCountry2021Resampled(j,:),positivityRatesCountry2020Resampled(j,:))
+        [h,bootCountryPValues(i,j),ci,stats] = ttest2(positivityRatesCountry2021Resampled(j,:),positivityRatesCountry2020Resampled(j,:));
         %Check if ci contains 0.
-        if sum(ci ~= 0) > 0
+        if ci(1) < 0 && ci(2) > 0
             correlatedSamplesCountries(i,1) = correlatedSamplesCountries(i,1) + 1;
         end
     end
