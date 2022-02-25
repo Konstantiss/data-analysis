@@ -70,45 +70,43 @@ positivityRates2020 = positivityRates2020(positivityRates2020~=0);
 
 %% Question 2:
 
+X = positivityRates2021;
+Y = positivityRates2020;
+mutualSample = [X;Y];
+
 M = 1000;
-positivityRates2021Boot = bootstrp(M, @mean, positivityRates2021, length(positivityRates2021));
-positivityRates2020Boot = bootstrp(M, @mean, positivityRates2020, length(positivityRates2020));
+fHatX = zeros(length(Y),1);
+fHatY = zeros(length(Y),1);
 
-ksStats = zeros(M,1);
-pValues = zeros(M,1);
-h0 = zeros(M,1);
+for j = 1:length(Y)
+    fHatX(j) = sum(X(:) <= X(j)); 
+    fHatY(j) = sum(Y(:) <= Y(j)); 
+end
+kolmogorovStatOriginal = max(abs(fHatX(1:22) - fHatY));
+
+kolmogorovStat = zeros(M,1);
+
 for i = 1:M
-   [h,p,ksstat] = kstest2(positivityRates2021Boot(i,:),positivityRates2020Boot(i,:))
-   ksStats(i,1) = ksstat;
-   pValues(i,1) = p;
-   h0(i) = h;
-end
-figure()
-histogram(ksStats)
-title("Kolmogorov - Shmirnov statistic histogram")
-
-figure()
-histogram(pValues)
-title("P values histogram")
-
-figure()
-histogram(h0)
-title("H0 histogram")
-
-distributions = ["Exponential", "Lognormal", "Normal", "Poisson"];
-
-for i=1:length(distributions)
-    pd = fitdist(ksStats, distributions(i));
-    figure()
-    qqplot(ksStats, pd)
-    title("Quantile plot - "+ distributions(i))
+    mutualSample = mutualSample(randperm(length(mutualSample)));
+    xRand = mutualSample(1:length(X));
+    yRand = mutualSample(length(X)+1:end);
+    
+    for j = 1:length(Y)
+        fHatX(j) = sum(xRand(:) <= xRand(j)); 
+        fHatY(j) = sum(yRand(:) <= yRand(j)); 
+    end
+    absolutDif = abs(fHatX(1:22) - fHatY);
+    kolmogorovStat(i) = max(absolutDif);    
 end
 
-%It is apparent from the graphs that the positivity rates from 2020 and
-%2021 do not follow the same distribution.
+kolmogorovStat = sort(kolmogorovStat);
+alpha = 0.5;
+limits = floor([M*alpha/2 M*(1-alpha/2)]);
+boundaries = [kolmogorovStat(limits(1)) kolmogorovStat(limits(2))];
 
-%Instead of using the combined sample of positivityRates2021 and
-%positivityRates2020, we used kstest2 because it fits our problem better.
-%This is because kstest2(X,Y) checks the null hypothesis that X and Y come from
-%the same distribution. While kstest(X) checks the null hypothesis that X
-%comes from a standard normal distribution.
+if kolmogorovStatOriginal >= boundaries(1) && kolmogorovStatOriginal <= boundaries(2)
+    h = 0;
+end
+
+%Given that h = 0, we cannot reject the null hypothesis that 
+%the two periods come from the same distribution.
