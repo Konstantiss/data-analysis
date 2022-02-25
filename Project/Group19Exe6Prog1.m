@@ -46,4 +46,7 @@ weeklyPositivityRatesGreeceCzechiaResampled = weeklyPositivityRatesGreeceCzechia
 % weeklyPositivityRatesGreeceCzechiaResampled(:,2) = temp2(:,2);
 corrcoef(weeklyPositivityRatesGreeceCzechiaResampled)
 
-
+% Looking at the two correlation coefficient tables for the resampled data,
+% we come to the conclusion that the correlation between Greece and Croatia
+% does not differ significantly with the correlation between Greece and
+% Czechia.
