@@ -1,52 +1,29 @@
-% Konstantinos Michopoulos, webmail: michopoul@ece.auth.gr, AEM: 9839
-% Georgios Skiadas, webmail: skiadasg@ece.auth.gr, AEM: 9907
-
-clc
-close all;
 clear
+clc
 
-M = 1000;
-%Get necessary data.
-[bestCountryIds, positivityRatesBestCountries, positivityRatesGreece] = Group19Exe6Fun1();
+[positivityRateCountryA, positivityRateCountryB,positivityRateGreece] = Group19Exe6Fun1();
 
-weeklyPositivityRatesGreeceCroatia = [positivityRatesGreece' positivityRatesBestCountries(1,:)'];
-weeklyPositivityRatesGreeceCzechia = [positivityRatesGreece' positivityRatesBestCountries(2,:)'];
+iterations = 100;
+sampleAGreece = [positivityRateCountryA positivityRateGreece];
+sampleBGreece = [positivityRateCountryB positivityRateGreece];
 
-%Resample data. Because we want the correlation coefficient of the array,
-%we resample it this unconventional way in order to maintain two columns.
-% temp = weeklyPositivityRatesGreeceCroatia(:,1);
-% [~,bootsam] = bootstrp(M,[],temp);
-% bootsam = reshape(bootsam, length(bootsam), []);
-% temp2 = temp(bootsam);
-% weeklyPositivityRatesGreeceCroatiaResampled(:,1) = temp2(:,1);
-% temp = weeklyPositivityRatesGreeceCroatia(:,2);
-% [~,bootsam] = bootstrp(M,[],temp);
-% bootsam = reshape(bootsam, length(bootsam), []);
-% temp2 = temp(bootsam);
-% weeklyPositivityRatesGreeceCroatiaResampled(:,2) = temp2(:,2);
-% corrcoef(weeklyPositivityRatesGreeceCroatiaResampled)
-[~,bootsam] = bootstrp(M,[],weeklyPositivityRatesGreeceCroatia);
-bootsam = reshape(bootsam, length(bootsam), []);
-weeklyPositivityRatesGreeceCroatiaResampled = weeklyPositivityRatesGreeceCroatia(bootsam);
-corrcoef(weeklyPositivityRatesGreeceCroatiaResampled)
+correlationMatrix = corrcoef(sampleAGreece,sampleBGreece);
+corrCoef = correlationMatrix(1,2);
 
-[~,bootsam] = bootstrp(M,[],weeklyPositivityRatesGreeceCzechia);
-bootsam = reshape(bootsam, length(bootsam), []);
-weeklyPositivityRatesGreeceCzechiaResampled = weeklyPositivityRatesGreeceCzechia(bootsam);
+permutationCorrCoef = zeros(iterations,1);
 
-% temp = weeklyPositivityRatesGreeceCzechia(:,1);
-% [~,bootsam] = bootstrp(M,[],temp);
-% bootsam = reshape(bootsam, length(bootsam), []);
-% temp2 = temp(bootsam);
-% weeklyPositivityRatesGreeceCzechiaResampled(:,1) = temp2(:,1);
-% temp = weeklyPositivityRatesGreeceCzechia(:,2);
-% [~,bootsam] = bootstrp(M,[],temp);
-% bootsam = reshape(bootsam, length(bootsam), []);
-% temp2 = temp(bootsam);
-% weeklyPositivityRatesGreeceCzechiaResampled(:,2) = temp2(:,2);
-corrcoef(weeklyPositivityRatesGreeceCzechiaResampled)
+for i = 1:iterations
+    sampleAGreece = sampleAGreece(randperm(length(sampleAGreece)));
+    tempCorrelationMatrix = corrcoef(sampleAGreece,sampleBGreece);
+    permutationCorrCoef(i) = tempCorrelationMatrix(1,2);
+end
 
-% Looking at the two correlation coefficient tables for the resampled data,
-% we come to the conclusion that the correlation between Greece and Croatia
-% does not differ significantly with the correlation between Greece and
-% Czechia.
+coefficients = [permutationCorrCoef; corrCoef];
+coefficients = sort(coefficients);
+
+r_value = find(coefficients == corrCoef);
+alpha = 5;
+
+if r_value<(iterations+1)*(alpha/2) || r_value>(iterations+1)*(1-alpha/2)
+    disp("Values are not following the same distribution"); 
+end
