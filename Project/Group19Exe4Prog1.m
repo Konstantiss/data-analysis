@@ -45,8 +45,6 @@ end
 %% Other countries
 countryIds = [estoniaId - 2 estoniaId - 1 estoniaId + 1 estoniaId + 3];
 
-% positivityRatesCountries2021 = zeros(length(countryIds),length(weeks2021));
-% positivityRatesCountries2020 = zeros(length(countryIds),length(weeks2020));
 countryPValues = zeros(length(countryIds),1);
 bootCountryPValues = zeros(length(countryIds), M);
 correlatedSamplesCountries = zeros(length(countryIds),1);
@@ -77,6 +75,8 @@ for i=1:length(countryIds)
    
 end
 
+disp(h)
+disp(h_parametric)
 
 %We come to the conclusion that the positivity rates of 2021 and 2020
 %differ significantly. We need to take into consideration the small sample

@@ -108,5 +108,7 @@ if kolmogorovStatOriginal >= boundaries(1) && kolmogorovStatOriginal <= boundari
     h = 0;
 end
 
+disp(h)
+
 %Given that h = 0, we cannot reject the null hypothesis that 
 %the two periods come from the same distribution.
